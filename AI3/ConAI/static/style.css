@@ -1,0 +1,51 @@
+body {
+    background-color: whitesmoke;
+  }
+
+  .container-fluid {
+      margin-top: 10px;
+  }
+
+.extracted-text {
+  max-height: 300px;
+  overflow-y: auto; /* for vertical scrolling */
+  border: 1px solid #ccc; /* border for visual separation */
+  padding: 10px; /* padding for better spacing */
+  font-style: italic;
+}
+
+/*
+.role_user, .questions {
+  text-shadow: 5px orange;
+  font-style: italic;
+  background-color: skyblue;
+  text-align: left;
+  color: yellow;
+}
+
+.role_model, .responses {
+  text-shadow: 5px orange;
+  font-style: italic;
+  background-color: lightgreen;
+  text-align: left;
+  color: blueviolet;
+}
+*/
+/* Table with increased border thickness */
+.table {
+  width: 100%;
+  border-collapse: collapse; /* Ensure cells are borderless and together */
+  border: 2px solid #ddd; /* Add a 2px solid border around the table */
+}
+
+.table th, .table td {
+  border: 2px solid #ddd; /* Add a 2px solid border to table headers and data cells */
+  padding: 8px; /* Padding inside table cells */
+  text-align: center; /* Center align text in cells */
+}
+
+.table th {
+  background-color: #f2f2f2; /* Light gray background color for table header */
+  color: #333; /* Dark text color for table header */
+}
+

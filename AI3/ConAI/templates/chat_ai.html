@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+  {% load static %}
+    <title>Chat AI</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'style.css' %}" rel="stylesheet" type="text/css">
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container-fluid" style="margin-top: 50px;">
+  
+        <div class="col-md-offset-1 col-md-4">
+
+        <div class = "question-box">
+        <h3 class = "page-header text-primary text-center">Conversation AI</h3>
+        
+        <form action="" method="post" mt-4">
+            {% csrf_token %}
+          <div class="form-group">
+              <label for="question">Type your question here</label>
+              <textarea id="question" name="question" class="form-control" rows="5" placeholder="Type your question here...."></textarea>
+          </div>
+          <button type="submit" class="btn btn-success pull-right">Submit Query</button>
+          <a href="{% url 'ConAI:clear_session' %}" class="button pull-left">Clear conversation</a>
+        </form>
+        </div>
+        <br><br>
+        <a href="{% url 'ConAI:chat_hsitory' %}" class="btn btn-primary">Chat history</a>
+        <br><br>
+
+        <div class = 'live-conversation chat-container'>
+            {% if conversations %}
+            <div class="conversation_dict">
+                <h2 class="conversation_heading"> Conversation </h2>
+                {% for message in conversations %}
+                    <p class="{{ message.role }}">{{ message.role|title }}: {{ message.parts|join:" " }}</p>
+                {% endfor %}
+            </div>
+
+            {% elif chat_doc_dict %}
+                <div class="chat_doc_ai">
+                    <h2 class="conversation_heading"> Conversation </h2>
+                    <p class="questions">User: {{ chat_doc_dict.questions }}</p>
+                    <p class="responses">Model: {{ chat_doc_dict.responses }}</p>
+                </div>
+
+            {% else %}
+                <div class="no-response">
+                    <p>Start a conversation</p>
+                </div>
+            {% endif %}
+        </div>
+        </div>
+        
+
+        <div class="col-md-6 pull-right">
+        <form id="uploadForm" action="{% url 'ConAI:upload_file' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+          <label class = "page-header text-center">Please, upload and select the file before start interacting with documents</label>
+          {{ forms.form_file }}
+        </div>
+        <button type="submit" name="submit_file" class="btn btn-primary">Upload File</button>
+        </form>
+
+        <div class = "file-list-view">
+        {% if files_list %}
+        <h3 class="page-header text-primary text-center">View Files</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                <th style="text-align:center">File No.</th>
+                <th style="text-align:center">File</th>
+                <th style="text-align:center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files_list %}
+                <tr>
+                    <td style="text-align:center">{{ forloop.counter }}</td>
+                    <td><a href="{{ file.file_detail.url }}">{{ file.file_detail }}</a></td>
+                    <td style="text-align:center">
+                        <a href="{% url 'ConAI:delete_file' file.id %}" class="btn btn-danger">Delete</a>
+                        <a href="{% url 'ConAI:select_file' file.id %}" class="btn btn-info">Select</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+        {% else %}
+            <h3 class="page-header text-primary text-center">File list empty</h3>
+        {% endif %}
+        </div>
+        <br>
+
+        <div class = "message_alert">
+            {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+                </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class = "extracted-text-box">
+            {% if text_chunks %}
+            <div class="extracted-text" style="display:inline-flex;">
+                <h3>Extracted Text Chunks</h3>
+                <ul>
+                    {% for chunk in text_chunks %}
+                    <li>{{ chunk.text }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    $(document).ready(function(){
+        $('.alert').fadeOut(5000);
+    });
+
+</script>
+</html>
